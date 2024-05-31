@@ -17,19 +17,29 @@ namespace function
         //  假设概率为 10%
         static constexpr std::size_t possibility = 10;
 
-        //  如果消息类型不是纯文本则返回
+        //  手动解析 MiraiCode, 如果消息类型不是纯文本则返回
         auto message_json = json::parse(event.message.toString());
         if (message_json.at(0).at("type") != "PlainText")
             return;
 
-        //  如果随机数 >= 概率，则返回
-        if (range(function::engine) >= possibility)
+        //  获得信息的字符串
+        auto message = message_json.at(0).at("content").get<std::string>();
+
+        //  如果消息内容开头是 '.' 则返回, 我们不希望 Poly 读入指令类型的信息
+        if (message.front() == '.')
             return;
 
-        auto message = message_json.at(0).at("content").get<std::string>();
+        //  定义表示 URL 的 regex, 如果这条消息是一条 URL, 则直接返回
         boost::regex regex("^((http[s]?|ftp):\\/)?\\/?([^:\\/\\s]+)((\\/\\w+)*\\/)([\\w\\-\\.]+[^#?\\s]+)(.*)?(#[\\w\\-]+)?$");
+        if (boost::regex_match(message, regex))
+            return;
 
-        if (!message.empty() && !boost::regex_match(message, regex))
+        //  如果消息为空, 则不记录这条消息
+        if (!message.empty())
+            return;
+
+        //  如果随机数在概率区间内, 则存入这条消息
+        if (range(function::engine) < possibility)
             function::group_message_json["phrases"] += message;
     }
 }

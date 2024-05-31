@@ -39,12 +39,14 @@ namespace function
 
 		//	从尾部开始逐个插入数据
 		if (!poly_json["phrases"].empty())
-			poly_buffer.insert(
-				std::end(poly_buffer),
-				std::begin(poly_json["phrases"]), 
-				std::end(poly_json["phrases"])
-			);
-		
+		{
+            //  由于 Pull Request https://github.com/Fluffy-Frontier/FluffySTG/pull/3326
+            //  更改了 Poly 的文字存储格式, 所以读入方式也需要更改, 使用迭代器访问对象的 Key
+            //  不知道出于什么原因, 对象的读取顺序是逆序的, 所以这里选择 reverse_iterator
+            for (auto iter = poly_json.at("phrases").rbegin(); iter != poly_json.at("phrases").rend(); iter++)
+                poly_buffer.push_back(iter.key());      //  向缓冲区存入当前 Key, Key 的类型已知均为字符串
+        }
+
 		if (!group_message_json["phrases"].empty())
 			poly_buffer.insert(
 				std::end(poly_buffer),

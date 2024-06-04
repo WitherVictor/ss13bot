@@ -35,7 +35,7 @@ namespace function
             return;
 
         //  如果消息为空, 则不记录这条消息
-        if (!message.empty())
+        if (message.empty())
             return;
 
         //  如果随机数在概率区间内, 则存入这条消息

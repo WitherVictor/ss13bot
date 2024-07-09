@@ -307,6 +307,14 @@ namespace function
 							PlainText(config_json["IP address"].get<std::string>())
 						);
 					}
+					else if (command_buffer[1] == "log")
+					{
+						event.group.sendMessage
+						(
+							MessageChain("更新日志列表：") + 
+                            PlainText("https://spacestation13.fandom.com/zh/wiki/%E6%9C%8D%E5%8A%A1%E5%99%A8Log%E5%88%97%E8%A1%A8")
+						);
+					}
             	}
 				else if (command_buffer[0] == "plugin")
 				{

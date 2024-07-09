@@ -12,7 +12,7 @@ using namespace MiraiCP;
 const PluginConfig CPPPlugin::config {
         "19990507",             // 插件id，如果和其他插件id重复将会被拒绝加载！
         "SS13Bot",        // 插件名称
-        "2.0.0",            // 插件版本
+        "2.0.5",            // 插件版本
         "WitherVictor",        // 插件作者
         "SS13国服查询用机器人"  // 可选：插件描述
         //  "Publish time"        // 可选：日期

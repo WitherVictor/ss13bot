@@ -109,6 +109,9 @@ if(Boost_FOUND)
     target_link_libraries(${MIRAICP_TARGET_NAME} ${Boost_LIBRARIES})
 endif()
 
+# 将 function 下的所有文件加入编译
 aux_source_directory(${MIRAICP_TARGET_NAME} function)
+
+# 链接 Boost.asio 的依赖库
 target_link_libraries(${MIRAICP_TARGET_NAME} ws2_32)
 # SS13Bot end

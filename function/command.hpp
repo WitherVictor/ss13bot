@@ -312,7 +312,7 @@ namespace function
 						event.group.sendMessage
 						(
 							MessageChain("更新日志列表：") + 
-                            PlainText("https://spacestation13.fandom.com/zh/wiki/%E6%9C%8D%E5%8A%A1%E5%99%A8Log%E5%88%97%E8%A1%A8")
+                            PlainText("https://spacestation13cn.miraheze.org/wiki/%E6%9C%8D%E5%8A%A1%E5%99%A8Log%E5%88%97%E8%A1%A8")
 						);
 					}
             	}

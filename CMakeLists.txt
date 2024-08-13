@@ -109,6 +109,8 @@ if(Boost_FOUND)
     target_link_libraries(${MIRAICP_TARGET_NAME} ${Boost_LIBRARIES})
 endif()
 
+add_compile_options(-std=c++23 -Wall -Wextra -Werror)
+
 # 将 function 下的所有文件加入编译
 aux_source_directory(${MIRAICP_TARGET_NAME} function)
 

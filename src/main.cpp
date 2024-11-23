@@ -1,6 +1,8 @@
 // MiraiCP依赖文件(只需要引入这一个)
 #include <MiraiCP.hpp>
 
+//  SS13bot begin
+#include "../function/welcome.hpp"
 
 using namespace MiraiCP;
 
@@ -21,7 +23,11 @@ public:
     ~PluginMain() override = default; // override关键字是为了防止内存泄漏
 
     // 入口函数。插件初始化时会被调用一次，请在此处注册监听
-    void onEnable() override {}
+    void onEnable() override {
+
+        //	注册成员加入函数, 在新成员加入时发送欢迎消息
+        Event::registerEvent<MemberJoinEvent>(function::welcome);
+    }
 
     // 退出函数。请在这里结束掉所有子线程，否则可能会导致程序崩溃
     void onDisable() override {}

@@ -2,6 +2,7 @@
 
 #include <MiraiCP.hpp>
 #include <thread>
+#include <format>
 
 using namespace MiraiCP;
 using namespace std::chrono_literals;
@@ -15,7 +16,7 @@ inline void welcome(MemberJoinEvent event) {
 
     //  如果加入事件并非来源于指定群，那么直接返回，不做任何事。
     if (event.group.groupId() != QQID{884013901}) {
-        Logger::logger.info(std::format("群事件不来自于指定群 {}", 884013901));
+        Logger::logger.info(std::format("群事件不来自于指定群: {}", 884013901));
         return;
     }
 

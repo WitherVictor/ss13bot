@@ -97,3 +97,23 @@ if (UNIX)
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
     target_link_options(${MIRAICP_TARGET_NAME} PUBLIC -static-libstdc++ -static-libgcc)
 endif (UNIX)
+
+# SS13bot begin
+find_package(Boost REQUIRED)
+
+if(Boost_FOUND)
+    message("Boost found !")
+    include_directories(${Boost_INCLUDE_DIRS})
+    target_link_libraries(${MIRAICP_TARGET_NAME} ${Boost_LIBRARIES})
+endif()
+
+# 开启所有警告
+add_compile_options(-Wall -Wextra -Werror -pedantic -O2)
+
+# 将 function 下的所有文件加入编译
+aux_source_directory(${MIRAICP_TARGET_NAME} function)
+
+# 链接 Boost.asio 的依赖库
+target_link_libraries(${MIRAICP_TARGET_NAME} ws2_32)
+
+# SS13Bot end

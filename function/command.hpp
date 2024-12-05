@@ -68,6 +68,10 @@ inline static std::string calculate_time(const std::string& time_string) {
            );
 }
 
+/**
+ * @brief 解析服务器返回的带有服务器运行信息的数据字符串
+ * @return 返回 server_status 的装有信息的结构体
+ */
 inline static server_status parse_data_string(const std::string& server_data_string) {
 
     //  将数据字符串分段
@@ -126,7 +130,7 @@ inline static server_status get_server_status(boost::system::error_code& functio
 
     //  连接游戏服务器
     boost::system::error_code socket_error_code{};
-    socket.connect(endpoint, socket_error_code);
+    auto _ = socket.connect(endpoint, socket_error_code);
 
     //  如果连接失败，则发出错误消息并直接返回
     if (socket_error_code) {
@@ -151,7 +155,8 @@ inline static server_status get_server_status(boost::system::error_code& functio
 
     //  向服务器发送数据
     boost::system::error_code transform_error_code{};
-    boost::asio::write(socket, boost::asio::buffer(packet), packet.size() - 1, transform_error_code);
+    boost::asio::write(socket, boost::asio::buffer(packet),
+                        packet.size() - 1, transform_error_code);
 
     //  如果发送失败，则发出错误消息并直接返回
     if (transform_error_code) {

@@ -155,8 +155,7 @@ inline static server_status get_server_status(boost::system::error_code& functio
 
     //  向服务器发送数据
     boost::system::error_code transform_error_code{};
-    boost::asio::write(socket, boost::asio::buffer(packet),
-                        packet.size() - 1, transform_error_code);
+    auto bytes_sent = boost::asio::write(socket, boost::asio::buffer(packet), transform_error_code);
 
     //  如果发送失败，则发出错误消息并直接返回
     if (transform_error_code) {
@@ -175,7 +174,7 @@ inline static server_status get_server_status(boost::system::error_code& functio
         return {};
     }
 
-    Logger::logger.info("服务器数据请求已发送");
+    Logger::logger.info("服务器数据请求已发送, 数据包字节数: {}", bytes_sent);
 
     //  接收服务器发回的服务器数据
     constexpr std::size_t buffer_size = 4096;

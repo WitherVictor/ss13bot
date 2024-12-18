@@ -8,10 +8,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-cmake_policy(SET CMP0167 NEW)
-
 # 在64位编译
 set(BUILD_USE_64BITS on)
+
+cmake_policy(SET CMP0167 NEW)
 
 # 声明C++项目
 project(MIRAICP_TEMPLATE LANGUAGES CXX)
@@ -105,6 +105,8 @@ endif (UNIX)
 # SS13bot begin
 find_package(Boost REQUIRED)
 
+add_subdirectory(thirdparty/expected)
+
 if(Boost_FOUND)
     message("Boost found !")
     include_directories(${Boost_INCLUDE_DIRS})
@@ -117,7 +119,7 @@ add_compile_options(-Wall -Wextra -Werror -pedantic -O2)
 # 将 function 下的所有文件加入编译
 aux_source_directory(${MIRAICP_TARGET_NAME} function)
 
-# 链接 Boost.asio 的依赖库
-target_link_libraries(${MIRAICP_TARGET_NAME} ws2_32)
+# 链接 Boost.asio 的依赖库, expected
+target_link_libraries(${MIRAICP_TARGET_NAME} PRIVATE ws2_32 tl::expected)
 
 # SS13Bot end

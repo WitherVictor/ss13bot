@@ -22,6 +22,8 @@
 #include <boost/asio/ip/address.hpp>
 #include <boost/asio/write.hpp>
 
+#include <tl/expected.hpp>
+
 using namespace MiraiCP;
 
 namespace function {
@@ -36,6 +38,12 @@ struct server_status {
     std::string security_level{};
     std::string online_players{};
     std::string shuttle_status{};
+};
+
+//	表示错误的结构体
+struct error_info {
+	boost::system::error_code error_code{};
+	std::string error_message{};	
 };
 
 inline static std::string get_server_running_status(const std::string& current_status) {
@@ -115,11 +123,7 @@ inline static server_status parse_data_string(const std::string& server_data_str
  * @brief 获取当前服务器的信息，可能失败
  * @return 返回服务器的状态，如果连接失败则为空
  */
-inline static server_status get_server_status(boost::system::error_code& function_error_code) {
-    
-    //  本来这里返回值用 std::expeected 进行错误处理会更好，
-    //  但是 C++23 没法编译通过，
-    //  因此使用 error_code 进行错误处理了
+inline static tl::expected<server_status, error_info> get_server_status() {
 
     //  初始化 io_context 和 socket
     boost::asio::io_context context{};
@@ -134,19 +138,8 @@ inline static server_status get_server_status(boost::system::error_code& functio
 
     //  如果连接失败，则发出错误消息并直接返回
     if (socket_error_code) {
-
         socket.close();
-
-        //  组合含有错误信息的字符串
-        auto error_message = std::format("Socket 连接失败! 错误码: {}，错误信息: {}", 
-                                function_error_code.value(), function_error_code.message());
-
-        //  将错误信息打印到 overflow 的控制台
-        Logger::logger.warning(error_message);
-
-        //  将错误码传递给调用方并直接返回
-        function_error_code = socket_error_code;
-        return {};
+        return tl::unexpected(error_info{socket_error_code, "Socket 连接失败!"});
     }
 
     //  准备向服务器发起查询请求的数据包
@@ -159,19 +152,8 @@ inline static server_status get_server_status(boost::system::error_code& functio
 
     //  如果发送失败，则发出错误消息并直接返回
     if (transform_error_code) {
-
         socket.close();
-
-        //  组合含有错误信息的字符串
-        auto error_message = std::format("数据发送失败! 错误码: {}，错误信息: {}", 
-                                transform_error_code.value(), transform_error_code.message());
-
-        //  将错误信息打印到 overflow 的控制台
-        Logger::logger.warning(error_message);
-
-        //  将错误码传递给调用方并直接返回
-        function_error_code = transform_error_code;
-        return {};
+		return tl::unexpected(error_info{transform_error_code, "数据发送失败!"});
     }
 
     Logger::logger.info("服务器数据请求已发送, 数据包字节数: {}", bytes_sent);
@@ -184,17 +166,7 @@ inline static server_status get_server_status(boost::system::error_code& functio
 
     if (transform_error_code && transform_error_code != boost::asio::error::eof) {
         socket.close();
-
-        //  组合含有错误信息的字符串
-        auto error_message = std::format("数据接收失败! 错误码: {}，错误信息: {}", 
-                                transform_error_code.value(), transform_error_code.message());
-
-        //  将错误信息打印到 overflow 的控制台
-        Logger::logger.warning(error_message);
-
-        //  将错误码传递给调用方并直接返回
-        function_error_code = transform_error_code;
-        return {};
+		return tl::unexpected(error_info{transform_error_code, "数据接收失败!"});
     }
 
     Logger::logger.info("已接收服务器发送的数据包, 接收字节数: {}", bytes_read);
@@ -222,26 +194,26 @@ inline static server_status get_server_status(boost::system::error_code& functio
         auto server_status_struct = parse_data_string(server_data_string);
         return server_status_struct;
     } else {
-        Logger::logger.info("数据包验证失败!");
-        function_error_code = boost::system::errc::make_error_code(boost::system::errc::protocol_error);
-        return {};
+		auto error_code = boost::system::errc::make_error_code(boost::system::errc::protocol_error);
+        return tl::unexpected(error_info{error_code, "数据包验证失败!"});
     }
 }
 
 inline static void send_server_status(GroupMessageEvent event) {
 
     //  获取服务器的当前信息
-    boost::system::error_code function_error_code{};
-    auto server_status = get_server_status(function_error_code);
+    auto server_status_expected = get_server_status();
 
     //  如果连接失败
-    if (function_error_code) {
+    if (server_status_expected) {
         //  组合含有错误信息的字符串
-        auto error_message = std::format("服务器连接失败，错误码: {}，错误信息: {}", 
-                                function_error_code.value(), function_error_code.message());
+		auto error_struct = server_status_expected.error();
+        auto error_message = std::format("服务器连接失败! 错误类型: {}, 错误码: {}, 错误码信息: {}", 
+                                error_struct.error_message, error_struct.error_code.value(), error_struct.error_code.message());
 
         //  将错误消息发送至 QQ 群并终止函数执行
         event.group.sendMessage(error_message);
+		Logger::logger.error(error_message);
         return;
     }
 

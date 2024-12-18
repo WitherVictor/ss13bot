@@ -121,7 +121,7 @@ inline static server_status parse_data_string(const std::string& server_data_str
 
 /**
  * @brief 获取当前服务器的信息，可能失败
- * @return 返回服务器的状态，如果连接失败则为空
+ * @return 成功返回服务器的状态，失败则返回错误信息
  */
 inline static tl::expected<server_status, error_info> get_server_status() {
 
@@ -221,7 +221,7 @@ inline static void send_server_status(GroupMessageEvent event) {
 }
 
 //  目前支持的指令列表
-static inline std::unordered_map<std::string, std::function<void(GroupMessageEvent)>> commands_list{
+static inline const std::unordered_map<std::string, std::function<void(GroupMessageEvent)>> commands_list{
     {".server main", send_server_status}
 };
 

@@ -2,7 +2,7 @@
 #include <MiraiCP.hpp>
 
 //  SS13bot begin
-#include "../function/welcome.hpp"
+#include <welcome.h>
 
 using namespace MiraiCP;
 

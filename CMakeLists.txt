@@ -109,17 +109,17 @@ add_subdirectory(thirdparty/expected)
 
 if(Boost_FOUND)
     message("Boost found !")
-    include_directories(${Boost_INCLUDE_DIRS})
-    target_link_libraries(${MIRAICP_TARGET_NAME} ${Boost_LIBRARIES})
+    target_include_directories(${MIRAICP_TARGET_NAME} PRIVATE ${Boost_INCLUDE_DIRS})
+    target_link_libraries(${MIRAICP_TARGET_NAME} PRIVATE ${Boost_LIBRARIES})
 endif()
 
 # 开启所有警告
 add_compile_options(-Wall -Wextra -Werror -pedantic -O2)
 
-# 将 function 下的所有文件加入编译
-aux_source_directory(${MIRAICP_TARGET_NAME} function)
-
 # 链接 Boost.asio 的依赖库, expected
 target_link_libraries(${MIRAICP_TARGET_NAME} PRIVATE ws2_32 tl::expected)
+
+# 引入头文件
+target_include_directories(${MIRAICP_TARGET_NAME} PRIVATE include)
 
 # SS13Bot end

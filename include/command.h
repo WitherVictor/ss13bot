@@ -12,8 +12,6 @@ namespace function {
 
 using namespace MiraiCP;
 
-void send_server_status(GroupMessageEvent event);
-
 extern const std::unordered_map<std::string, std::function<void(GroupMessageEvent)>> commands_list;
 
 void command(GroupMessageEvent event);

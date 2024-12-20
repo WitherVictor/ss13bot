@@ -1,6 +1,10 @@
+#include <cctype>
+#include <charconv>
 #include <detailed.h>
 
 //  标准库
+#include <format>
+#include <iterator>
 #include <string>
 #include <chrono>
 #include <ranges>
@@ -82,11 +86,7 @@ server_status parse_data_string(const std::string& server_data_string) {
     }
 
     //  将服务器信息放入结构体内
-    server_status data_struct{};
-    data_struct.status = get_server_running_status(server_data_map.at("gamestate"));
-    data_struct.round_id = server_data_map.at("round_id");
-    data_struct.time = calculate_time(server_data_map.at("round_duration"));
-    return data_struct;
+    return extract_server_info(server_data_map);
 }
 
 /**
@@ -171,6 +171,75 @@ tl::expected<server_status, error_info> get_server_status() {
     }
 }
 
+server_status extract_server_info(const std::map<std::string, std::string>& server_info_map) {
+    server_status server_info_struct{
+        .status = get_server_running_status(server_info_map.at("gamestate")),
+        .round_id = server_info_map.at("round_id"),
+        .round_duration = server_info_map.at("round_duration"),
+        .time_dilation = parse_server_dilation(server_info_map),
+        .map_name = parse_server_map(server_info_map.at("map_name")),
+        .security_level = server_info_map.at("security_level"),
+        .players = server_info_map.at("players"),
+    };
+
+    //  将警报等级的第一个字符设为大写
+    auto& front_char = server_info_struct.security_level.front();
+    front_char = std::toupper(static_cast<unsigned char>(front_char));
+    return server_info_struct;
 }
 
+double td_string_to_double(const std::string& time_dilation_string) {
+    auto size = static_cast<std::string::iterator::difference_type>(time_dilation_string.size());
+
+    double result{};
+    std::from_chars(time_dilation_string.data(), std::next(time_dilation_string.data(), size), result);
+    return result;
 }
+
+std::string parse_server_dilation(const std::map<std::string, std::string> &server_info_map) {
+    //  提取所有字符串
+    auto td_current = server_info_map.at("time_dilation_current");
+    auto td_average = server_info_map.at("time_dilation_avg");
+    auto td_average_slow = server_info_map.at("time_dilation_avg_slow");
+    auto td_average_fast = server_info_map.at("time_dilation_avg_fast");
+
+    //  保存转换后的结果
+    auto td_current_value = td_string_to_double(td_current);
+    auto td_average_value = td_string_to_double(td_average);
+    auto td_average_slow_value = td_string_to_double(td_average_slow);
+    auto td_average_fast_value = td_string_to_double(td_average_fast);
+
+    //  单位换算的倍率
+    constexpr auto multiplier = 100.0;
+
+    return std::format("{:.2f}% ({:.2f}%, {:.2f}%, {:.2f}%)", 
+                            td_current_value * multiplier,
+                            td_average_value * multiplier,
+                            td_average_slow_value * multiplier,
+                            td_average_fast_value * multiplier);
+}
+
+std::string parse_server_map(std::string server_map) {
+
+    //  将连接符 + 替换成空格
+    replace_substring(server_map, "+", " ");
+
+    //  将 URL 编码字符转换成实际符号
+    //  因为需要转换的字符较少因此直接替换
+    replace_substring(server_map, "%28", "(");
+    replace_substring(server_map, "%29", ")");
+
+    return server_map;
+}
+
+void replace_substring(std::string &str, const std::string &old_substr, const std::string &new_substr) {
+    size_t pos = 0;
+    while ((pos = str.find(old_substr, pos)) != std::string::npos) {
+        str.replace(pos, old_substr.length(), new_substr);
+        pos += new_substr.length();  // 确保继续查找下一个匹配
+    }
+}
+
+}   // end of namespace detailed
+
+}   // end of namespace function

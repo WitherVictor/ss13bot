@@ -1,7 +1,9 @@
 #pragma once
 
 //  标准库
+#include <algorithm>
 #include <string>
+#include <map>
 
 //  Boost 库
 #include <boost/system/error_code.hpp>
@@ -15,11 +17,11 @@ namespace function {
 struct server_status {
     std::string status{};
     std::string round_id{};
-    std::string time{};
+    std::string round_duration{};
     std::string time_dilation{};
-    std::string map{};
+    std::string map_name{};
     std::string security_level{};
-    std::string online_players{};
+    std::string players{};
     std::string shuttle_status{};
 };
 
@@ -62,6 +64,46 @@ server_status parse_data_string(const std::string& server_data_string);
  */
 tl::expected<server_status, error_info> get_server_status();
 
+/**
+ * @brief 将分割的数据提取到结构体内
+ * 
+ * @param server_info_map
+ * @return server_status
+ */
+server_status extract_server_info(const std::map<std::string, std::string>& server_info_map);
+
+/**
+ * @brief 将多个 Time Dilation 数据合并成一个字符串
+ * 
+ * @param server_info_map 
+ * @return std::string 
+ */
+std::string parse_server_dilation(const std::map<std::string, std::string>& server_info_map);
+
+/**
+ * @brief 将 Time Dilation 的值类型从字符串转换为浮点类型
+ * 
+ * @param time_dilation_string 
+ * @return std::optional<double> 
+ */
+double td_string_to_double(const std::string& time_dilation_string);
+
+/**
+ * @brief 替换字符串内的连接符使其更可读
+ * 
+ * @param server_map 
+ * @return std::string 
+ */
+std::string parse_server_map(std::string server_map);
+
+/**
+ * @brief 替换字符串内的子串为预期子串
+ * 
+ * @param str 
+ * @param old_substr 
+ * @param new_substr 
+ */
+void replace_substring(std::string &str, const std::string &old_substr, const std::string &new_substr);
 }   //  end of namespace detailed
 
 }   //  end of namespace function

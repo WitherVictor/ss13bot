@@ -35,6 +35,8 @@ std::string get_server_running_status(const std::string& current_status) {
         return "Unknown";
 }
 
+
+
 std::string calculate_time(const std::string& time_string) {
 
     std::size_t seconds_value{};
@@ -54,10 +56,8 @@ std::string calculate_time(const std::string& time_string) {
            );
 }
 
-/**
- * @brief 解析服务器返回的带有服务器运行信息的数据字符串
- * @return 返回 server_status 的装有信息的结构体
- */
+
+
 server_status parse_data_string(const std::string& server_data_string) {
 
     //  将数据字符串分段
@@ -93,10 +93,8 @@ server_status parse_data_string(const std::string& server_data_string) {
     return extract_server_info(server_data_map);
 }
 
-/**
- * @brief 获取当前服务器的信息，可能失败
- * @return 成功返回服务器的状态，失败则返回错误信息
- */
+
+
 tl::expected<server_status, error_info> get_server_status() {
 
     using namespace MiraiCP;
@@ -174,6 +172,8 @@ tl::expected<server_status, error_info> get_server_status() {
     }
 }
 
+
+
 server_status extract_server_info(const std::map<std::string, std::string>& server_info_map) {
     server_status server_info_struct{
         .gamestate = detailed::get_server_running_status(server_info_map.at("gamestate")),
@@ -192,6 +192,8 @@ server_status extract_server_info(const std::map<std::string, std::string>& serv
     return server_info_struct;
 }
 
+
+
 double td_string_to_double(const std::string& time_dilation_string) {
     auto size = static_cast<std::string::iterator::difference_type>(time_dilation_string.size());
 
@@ -199,6 +201,8 @@ double td_string_to_double(const std::string& time_dilation_string) {
     std::from_chars(time_dilation_string.data(), std::next(time_dilation_string.data(), size), result);
     return result;
 }
+
+
 
 std::string parse_server_dilation(const std::map<std::string, std::string> &server_info_map) {
     //  提取所有字符串
@@ -223,6 +227,8 @@ std::string parse_server_dilation(const std::map<std::string, std::string> &serv
                             td_average_fast_value * multiplier);
 }
 
+
+
 std::string parse_server_map(std::string server_map) {
 
     //  将连接符 + 替换成空格
@@ -236,6 +242,8 @@ std::string parse_server_map(std::string server_map) {
     return server_map;
 }
 
+
+
 void replace_substring(std::string &str, const std::string &old_substr, const std::string &new_substr) {
     size_t pos = 0;
     while ((pos = str.find(old_substr, pos)) != std::string::npos) {
@@ -243,6 +251,8 @@ void replace_substring(std::string &str, const std::string &old_substr, const st
         pos += new_substr.length();  // 确保继续查找下一个匹配
     }
 }
+
+
 
 std::string get_shuttle_status(const std::map<std::string, std::string>& server_info_map) {
     auto shuttle_status = detailed::parse_shuttle_status(server_info_map.at("shuttle_mode"));
@@ -266,6 +276,8 @@ std::string get_shuttle_status(const std::map<std::string, std::string>& server_
     return std::format("{} {}", shuttle_status, shuttle_time);
 }
 
+
+
 std::string parse_shuttle_status(const std::string &shuttle_status) {
     if (shuttle_status == "idle") {
         return "IDL";
@@ -287,6 +299,8 @@ std::string parse_shuttle_status(const std::string &shuttle_status) {
         return "NON";
     }
 }
+
+
 
 std::string get_shuttle_time(const std::string &shuttle_time) {
     //  转发调用计算时间

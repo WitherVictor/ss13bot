@@ -35,7 +35,7 @@ void send_server_status(GroupMessageEvent event) {
 
     MessageChain server_status = MessageChain("====== 服务器状态 ======\n") +
                                     PlainText("运行状态: " + server_info.gamestate + "\n") +
-                                    PlainText("回合ID: " + server_info.round_id + "\n") +
+                                    PlainText("回合 ID: " + server_info.round_id + "\n") +
                                     PlainText("回合时长: " + server_info.round_duration + "\n") +
                                     PlainText("时间膨胀: " + server_info.time_dilation + "\n") + 
                                     PlainText("当前地图: " + server_info.map_name + "\n") +

@@ -1,7 +1,6 @@
 #pragma once
 
 //  标准库
-#include <algorithm>
 #include <string>
 #include <map>
 
@@ -15,7 +14,7 @@ namespace function {
 
 //  表示服务器信息的结构体
 struct server_status {
-    std::string status{};
+    std::string gamestate{};
     std::string round_id{};
     std::string round_duration{};
     std::string time_dilation{};
@@ -104,6 +103,31 @@ std::string parse_server_map(std::string server_map);
  * @param new_substr 
  */
 void replace_substring(std::string &str, const std::string &old_substr, const std::string &new_substr);
+
+/**
+ * @brief 压缩紧急穿梭机状态为简化表示
+ * 
+ * @param server_info_map 
+ * @return std::string 
+ */
+std::string get_shuttle_status(const std::map<std::string, std::string>& server_info_map);
+
+/**
+ * @brief 获取紧急穿梭机状态字符串的缩写
+ * 
+ * @param shuttle_status 
+ * @return std::string 
+ */
+std::string parse_shuttle_status(const std::string& shuttle_status);
+
+/**
+ * @brief 获取紧急穿梭机穿梭时间的值
+ * 
+ * @param shuttle_time 
+ * @return std::string 
+ */
+std::string get_shuttle_time(const std::string& shuttle_time);
+
 }   //  end of namespace detailed
 
 }   //  end of namespace function

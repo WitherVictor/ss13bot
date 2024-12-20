@@ -37,8 +37,12 @@ std::string get_server_running_status(const std::string& current_status) {
 
 std::string calculate_time(const std::string& time_string) {
 
+    std::size_t seconds_value{};
+
+    std::from_chars(time_string.data(), time_string.data() + time_string.size(), seconds_value);
+
     //  获取时间字符串代表的小时，分钟，和秒
-    std::chrono::seconds seconds{ std::stoull(time_string) };
+    std::chrono::seconds seconds{ seconds_value };
     std::chrono::minutes minutes = std::chrono::duration_cast<std::chrono::minutes>(seconds);
     std::chrono::hours hours = std::chrono::duration_cast<std::chrono::hours>(seconds);
 
@@ -163,8 +167,7 @@ tl::expected<server_status, error_info> get_server_status() {
         Logger::logger.info("数据长度: {}", server_data_string.size());
         
         //  解析字符串并保存至结构体
-        auto server_status_struct = parse_data_string(server_data_string);
-        return server_status_struct;
+        return detailed::parse_data_string(server_data_string);
     } else {
 		auto error_code = boost::system::errc::make_error_code(boost::system::errc::protocol_error);
         return tl::unexpected(error_info{error_code, "数据包验证失败!"});
@@ -173,13 +176,14 @@ tl::expected<server_status, error_info> get_server_status() {
 
 server_status extract_server_info(const std::map<std::string, std::string>& server_info_map) {
     server_status server_info_struct{
-        .status = get_server_running_status(server_info_map.at("gamestate")),
+        .gamestate = detailed::get_server_running_status(server_info_map.at("gamestate")),
         .round_id = server_info_map.at("round_id"),
         .round_duration = server_info_map.at("round_duration"),
-        .time_dilation = parse_server_dilation(server_info_map),
-        .map_name = parse_server_map(server_info_map.at("map_name")),
+        .time_dilation = detailed::parse_server_dilation(server_info_map),
+        .map_name = detailed::parse_server_map(server_info_map.at("map_name")),
         .security_level = server_info_map.at("security_level"),
         .players = server_info_map.at("players"),
+        .shuttle_status = detailed::get_shuttle_status(server_info_map)
     };
 
     //  将警报等级的第一个字符设为大写
@@ -204,10 +208,10 @@ std::string parse_server_dilation(const std::map<std::string, std::string> &serv
     auto td_average_fast = server_info_map.at("time_dilation_avg_fast");
 
     //  保存转换后的结果
-    auto td_current_value = td_string_to_double(td_current);
-    auto td_average_value = td_string_to_double(td_average);
-    auto td_average_slow_value = td_string_to_double(td_average_slow);
-    auto td_average_fast_value = td_string_to_double(td_average_fast);
+    auto td_current_value = detailed::td_string_to_double(td_current);
+    auto td_average_value = detailed::td_string_to_double(td_average);
+    auto td_average_slow_value = detailed::td_string_to_double(td_average_slow);
+    auto td_average_fast_value = detailed::td_string_to_double(td_average_fast);
 
     //  单位换算的倍率
     constexpr auto multiplier = 100.0;
@@ -222,12 +226,12 @@ std::string parse_server_dilation(const std::map<std::string, std::string> &serv
 std::string parse_server_map(std::string server_map) {
 
     //  将连接符 + 替换成空格
-    replace_substring(server_map, "+", " ");
+    detailed::replace_substring(server_map, "+", " ");
 
     //  将 URL 编码字符转换成实际符号
     //  因为需要转换的字符较少因此直接替换
-    replace_substring(server_map, "%28", "(");
-    replace_substring(server_map, "%29", ")");
+    detailed::replace_substring(server_map, "%28", "(");
+    detailed::replace_substring(server_map, "%29", ")");
 
     return server_map;
 }
@@ -238,6 +242,58 @@ void replace_substring(std::string &str, const std::string &old_substr, const st
         str.replace(pos, old_substr.length(), new_substr);
         pos += new_substr.length();  // 确保继续查找下一个匹配
     }
+}
+
+std::string get_shuttle_status(const std::map<std::string, std::string>& server_info_map) {
+    auto shuttle_status = detailed::parse_shuttle_status(server_info_map.at("shuttle_mode"));
+    
+    auto shuttle_time_string = server_info_map.at("shuttle_timer");
+    std::string shuttle_time{};
+
+    if (shuttle_status == "ERR") {  //  如果穿梭机被禁用，那么与游戏内一致显示为 "--:--"
+        shuttle_time = "--:--";
+    } else if (shuttle_status == "FIN" || shuttle_status == "NON") {    //  如果已经结束或状态未知，那么置为 0
+        shuttle_time = "00:00";
+    } else if (shuttle_status == "IDL") {   //  如果穿梭机闲置，那么 shuttle_time_string 的单位是分钟，直接显示
+        shuttle_time = std::format("{:0>2}:00", shuttle_time_string);
+    } else if (shuttle_time_string == "") { //  如果时间字符串为空，那么直接置为 0。与上一段以 shuttle_status 为判断条件分开
+        shuttle_time = "00:00";
+    } else {    //  否则会返回一个秒数，那么直接计算秒数即可
+        shuttle_time = detailed::calculate_time(shuttle_time_string);
+    }
+
+    //  返回与游戏内格式相同的压缩后穿梭机状态字符串
+    return std::format("{} {}", shuttle_status, shuttle_time);
+}
+
+std::string parse_shuttle_status(const std::string &shuttle_status) {
+    if (shuttle_status == "idle") {
+        return "IDL";
+    } else if (shuttle_status == "igniting") {
+        return "IGN";
+    } else if (shuttle_status == "recalled") {
+        return "RCL";
+    } else if (shuttle_status == "called") {
+        return "ETA";
+    } else if (shuttle_status == "docked") {
+        return "ETD";
+    } else if (shuttle_status == "escape") {
+        return "ESC";
+    } else if (shuttle_status == "stranded") {
+        return "ERR";
+    } else if (shuttle_status == "endgame%3a+game+over") {  //  判断条件就长这样，搞不懂 - -||
+        return "FIN";
+    } else {
+        return "NON";
+    }
+}
+
+std::string get_shuttle_time(const std::string &shuttle_time) {
+    //  转发调用计算时间
+    auto result = detailed::calculate_time(shuttle_time);
+
+    //  抛弃小时上的结果，只返回分钟和秒
+    return result.substr(result.find(":") + 1);
 }
 
 }   // end of namespace detailed

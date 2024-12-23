@@ -221,14 +221,11 @@ std::string parse_server_dilation(const std::map<std::string, std::string> &serv
     auto td_average_slow_value = detailed::td_string_to_double(td_average_slow);
     auto td_average_fast_value = detailed::td_string_to_double(td_average_fast);
 
-    //  单位换算的倍率
-    constexpr auto multiplier = 100.0;
-
     return std::format("{:.2f}% ({:.2f}%, {:.2f}%, {:.2f}%)", 
-                            td_current_value * multiplier,
-                            td_average_value * multiplier,
-                            td_average_slow_value * multiplier,
-                            td_average_fast_value * multiplier);
+                            td_current_value,
+                            td_average_value,
+                            td_average_slow_value,
+                            td_average_fast_value);
 }
 
 

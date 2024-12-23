@@ -133,7 +133,7 @@ tl::expected<server_status, error_info> get_server_status() {
     Logger::logger.info("服务器数据请求已发送, 数据包字节数: ", bytes_sent);
 
     //  接收服务器发回的服务器数据
-    constexpr std::size_t buffer_size = 4096;
+    constexpr std::size_t buffer_size = 8192;
     std::array<char, buffer_size> data_buffer{};
 
     auto bytes_read = socket.read_some(boost::asio::buffer(data_buffer), transform_error_code);

@@ -31,7 +31,7 @@ void command(GroupMessageEvent event) {
 
     //  如果加入事件并非来源于指定群，那么直接返回，不做任何事。
     if (event.group.groupId() != QQGroup_number) {
-        Logger::logger.info(std::format("群事件不来自于指定群: {}", QQGroup_number));
+        Logger::logger.info("群事件不来自于指定群: ", QQGroup_number);
         return;
     }
 
@@ -39,7 +39,7 @@ void command(GroupMessageEvent event) {
 
     auto called_command = commands_list.find(command);
     if (called_command != std::end(commands_list)) {
-        Logger::logger.info("检测到有效指令, 准备执行: ", *called_command);
+        Logger::logger.info("检测到有效指令, 准备执行: {}", called_command->first);
         called_command->second(event);
     }
 }

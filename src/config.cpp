@@ -8,11 +8,38 @@
 //  MiraiCP
 #include <MiraiCP.hpp>
 #include <json.hpp>
+#include <optional>
 
 namespace config {
 
 namespace fs = std::filesystem;
 using namespace MiraiCP;
+
+class server_list {
+public:
+    using data_type = std::map<std::string, std::string>;
+public:
+    server_list(data_type&& other)
+        : data_list{other} {}
+public:
+    /**
+     * @brief 查找服务器列表里面是否存在对应的名字, 否则返回空值
+     * 
+     * @param key 
+     * @return std::optional<std::string> 
+     */
+    std::optional<std::string> find(const std::string& key) const {
+        auto find_result_iter = data_list.find(key);
+
+        if (find_result_iter != data_list.end()) {
+            return find_result_iter->second;
+        } else {
+            return std::nullopt;
+        }
+    }
+private:
+    data_type data_list;
+};
 
 void initialize() {
     //  读取配置文件

@@ -11,6 +11,13 @@ namespace config {
 namespace fs = std::filesystem;
 
 /**
+ * @brief 保佑服务器名和其 IP 的映射,
+ *        用于查询服务器信息时根据名字选择 IP
+ * 
+ */
+class server_list;
+
+/**
  * @brief 插件启动之前执行初始化
  * 
  */

@@ -32,6 +32,9 @@ struct error_info {
 
 namespace detailed {
 
+template <std::integral Tp>
+class rng;
+
 /**
  * @brief 将字符串的值转换为指代服务器运行状态的字符串
  * 

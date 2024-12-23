@@ -178,13 +178,17 @@ server_status extract_server_info(const std::map<std::string, std::string>& serv
     server_status server_info_struct{
         .gamestate = detailed::get_server_running_status(server_info_map.at("gamestate")),
         .round_id = server_info_map.at("round_id"),
-        .round_duration = server_info_map.at("round_duration"),
+        .round_duration = detailed::calculate_time(server_info_map.at("round_duration")),
         .time_dilation = detailed::parse_server_dilation(server_info_map),
         .map_name = detailed::parse_server_map(server_info_map.at("map_name")),
         .security_level = server_info_map.at("security_level"),
         .players = server_info_map.at("players"),
         .shuttle_status = detailed::get_shuttle_status(server_info_map)
     };
+
+    //  抛弃小时位，只留下分钟和秒数，与游戏内格式保持一致
+    auto& shuttle_status = server_info_struct.shuttle_status;
+    shuttle_status = shuttle_status.substr(shuttle_status.find(":"));
 
     //  将警报等级的第一个字符设为大写
     auto& front_char = server_info_struct.security_level.front();

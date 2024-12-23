@@ -39,7 +39,7 @@ void command(GroupMessageEvent event) {
 
     auto called_command = commands_list.find(command);
     if (called_command != std::end(commands_list)) {
-        Logger::logger.info("检测到有效指令, 准备执行: {}", called_command->first);
+        Logger::logger.info("检测到有效指令, 准备执行: ", called_command->first);
         called_command->second(event);
     }
 }

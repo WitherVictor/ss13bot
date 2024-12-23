@@ -19,7 +19,7 @@ void welcome(MemberJoinEvent event) {
 
     //  如果加入事件并非来源于指定群，那么直接返回，不做任何事。
     if (event.group.groupId() != QQGroup_number) {
-        Logger::logger.info(std::format("群事件不来自于指定群: {}", QQGroup_number));
+        Logger::logger.info("群事件不来自于指定群: ", QQGroup_number);
         return;
     }
 

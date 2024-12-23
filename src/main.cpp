@@ -4,6 +4,7 @@
 //  SS13bot begin
 #include <welcome.h>
 #include <command.h>
+#include <config.h>
 
 using namespace MiraiCP;
 
@@ -25,6 +26,9 @@ public:
 
     // 入口函数。插件初始化时会被调用一次，请在此处注册监听
     void onEnable() override {
+
+        //  在正式启动之前, 我们需要先做一些初始化工作
+        config::initialization();
 
         //	注册成员加入函数, 在新成员加入时发送欢迎消息
         Event::registerEvent<MemberJoinEvent>(function::welcome);

@@ -2,7 +2,7 @@
 
 #include <MiraiCP.hpp>
 
-namespace function {
+namespace plugin {
 
 using namespace MiraiCP;
 
@@ -13,4 +13,4 @@ using namespace MiraiCP;
  */
 void welcome(MemberJoinEvent event);
 
-}   //  end of namespace function
+}   //  end of namespace plugin

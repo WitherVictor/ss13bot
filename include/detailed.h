@@ -10,7 +10,7 @@
 //  三方库
 #include <tl/expected.hpp>
 
-namespace function {
+namespace plugin {
 
 //  表示服务器信息的结构体
 struct server_status {
@@ -130,4 +130,4 @@ std::string get_shuttle_time(const std::string& shuttle_time);
 
 }   //  end of namespace detailed
 
-}   //  end of namespace function
+}   //  end of namespace plugin

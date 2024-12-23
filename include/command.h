@@ -8,7 +8,7 @@
 //  MiraiCP 依赖
 #include <MiraiCP.hpp>
 
-namespace function {
+namespace plugin {
 
 using namespace MiraiCP;
 
@@ -16,4 +16,4 @@ extern const std::unordered_map<std::string, std::function<void(GroupMessageEven
 
 void command(GroupMessageEvent event);
 
-}   //  end of namespace function
+}   //  end of namespace plugin

@@ -7,7 +7,7 @@
 using namespace MiraiCP;
 using namespace std::chrono_literals;
 
-namespace function {
+namespace plugin {
 
 void welcome(MemberJoinEvent event) {
 
@@ -55,4 +55,5 @@ void welcome(MemberJoinEvent event) {
         PlainText{ "请尽情 \"享受\" 你在空间站里的工作吧, 尽你所能努力活下去." }
     );
 }
-}   //  end of namespace function
+
+}   //  end of namespace plugin

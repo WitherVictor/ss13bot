@@ -3,10 +3,10 @@
 //  MiraiCP 依赖
 #include <MiraiCP.hpp>
 
-namespace function {
+namespace plugin {
 
 using namespace MiraiCP;
 
 void send_server_status(GroupMessageEvent event);
 
-}   //  end of namespace function
+}   //  end of namespace plugin

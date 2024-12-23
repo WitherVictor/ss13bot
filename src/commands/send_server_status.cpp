@@ -8,7 +8,7 @@
 #include <commands/send_server_status.h>
 #include <detailed.h>
 
-namespace function {
+namespace plugin {
 
 using namespace MiraiCP;
 
@@ -46,4 +46,4 @@ void send_server_status(GroupMessageEvent event) {
     event.group.sendMessage(server_status);
 }
 
-}   //  end of namespace function
+}   //  end of namespace plugin

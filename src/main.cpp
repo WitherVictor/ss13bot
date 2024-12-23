@@ -31,10 +31,10 @@ public:
         config::initialize();
 
         //	注册成员加入函数, 在新成员加入时发送欢迎消息
-        Event::registerEvent<MemberJoinEvent>(function::welcome);
+        Event::registerEvent<MemberJoinEvent>(plugin::welcome);
 
         //  注册指令解析函数，发送特定消息时视作指令并执行对应功能
-        Event::registerEvent<GroupMessageEvent>(function::command);
+        Event::registerEvent<GroupMessageEvent>(plugin::command);
     }
 
     // 退出函数。请在这里结束掉所有子线程，否则可能会导致程序崩溃

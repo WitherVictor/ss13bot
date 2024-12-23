@@ -18,7 +18,7 @@
 
 using namespace MiraiCP;
 
-namespace function {
+namespace plugin {
 
 //  目前支持的指令列表
 const std::unordered_map<std::string, std::function<void(GroupMessageEvent)>> commands_list{
@@ -44,4 +44,4 @@ void command(GroupMessageEvent event) {
     }
 }
 
-}   //  end of namespace function
+}   //  end of namespace plugin

@@ -16,7 +16,7 @@
 //  MiraiCP
 #include <MiraiCP.hpp>
 
-namespace function {
+namespace plugin {
 
 namespace detailed {
 
@@ -309,4 +309,4 @@ std::string get_shuttle_time(const std::string &shuttle_time) {
 
 }   // end of namespace detailed
 
-}   // end of namespace function
+}   // end of namespace plugin

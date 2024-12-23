@@ -28,7 +28,7 @@ public:
     void onEnable() override {
 
         //  在正式启动之前, 我们需要先做一些初始化工作
-        config::initialization();
+        config::initialize();
 
         //	注册成员加入函数, 在新成员加入时发送欢迎消息
         Event::registerEvent<MemberJoinEvent>(function::welcome);

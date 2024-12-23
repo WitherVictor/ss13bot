@@ -14,7 +14,7 @@ namespace config {
 namespace fs = std::filesystem;
 using namespace MiraiCP;
 
-void initialization() {
+void initialize() {
     //  读取配置文件
     auto config_json = read();
 }

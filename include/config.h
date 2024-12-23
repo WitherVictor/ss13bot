@@ -14,7 +14,7 @@ namespace fs = std::filesystem;
  * @brief 插件启动之前执行初始化
  * 
  */
-void initialization();
+void initialize();
 
 /**
  * @brief 读取当前目录下的配置文件

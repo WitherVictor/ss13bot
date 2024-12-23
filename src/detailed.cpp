@@ -130,7 +130,7 @@ tl::expected<server_status, error_info> get_server_status() {
 		return tl::unexpected(error_info{transform_error_code, "数据发送失败!"});
     }
 
-    Logger::logger.info("服务器数据请求已发送, 数据包字节数: {}", bytes_sent);
+    Logger::logger.info("服务器数据请求已发送, 数据包字节数: ", bytes_sent);
 
     //  接收服务器发回的服务器数据
     constexpr std::size_t buffer_size = 4096;
@@ -143,7 +143,7 @@ tl::expected<server_status, error_info> get_server_status() {
 		return tl::unexpected(error_info{transform_error_code, "数据接收失败!"});
     }
 
-    Logger::logger.info("已接收服务器发送的数据包, 接收字节数: {}", bytes_read);
+    Logger::logger.info("已接收服务器发送的数据包, 接收字节数: ", bytes_read);
     socket.close();
 
     //  如果数据包的头两个 byte 与约定的相同
@@ -161,8 +161,8 @@ tl::expected<server_status, error_info> get_server_status() {
                         std::back_inserter(server_data_string)
         );
 
-        Logger::logger.info("解析的服务器数据字符串为: {}", server_data_string);
-        Logger::logger.info("数据长度: {}", server_data_string.size());
+        Logger::logger.info("解析的服务器数据字符串为: ", server_data_string);
+        Logger::logger.info("数据长度: ", server_data_string.size());
         
         //  解析字符串并保存至结构体
         return detailed::parse_data_string(server_data_string);

@@ -186,10 +186,6 @@ server_status extract_server_info(const std::map<std::string, std::string>& serv
         .shuttle_status = detailed::get_shuttle_status(server_info_map)
     };
 
-    //  抛弃小时位，只留下分钟和秒数，与游戏内格式保持一致
-    auto& shuttle_status = server_info_struct.shuttle_status;
-    shuttle_status = shuttle_status.substr(shuttle_status.find(":"));
-
     //  将警报等级的第一个字符设为大写
     auto& front_char = server_info_struct.security_level.front();
     front_char = std::toupper(static_cast<unsigned char>(front_char));
@@ -270,7 +266,7 @@ std::string get_shuttle_status(const std::map<std::string, std::string>& server_
     } else if (shuttle_time_string == "") { //  如果时间字符串为空，那么直接置为 0。与上一段以 shuttle_status 为判断条件分开
         shuttle_time = "00:00";
     } else {    //  否则会返回一个秒数，那么直接计算秒数即可
-        shuttle_time = detailed::calculate_time(shuttle_time_string);
+        shuttle_time = detailed::get_shuttle_time(shuttle_time_string);
     }
 
     //  返回与游戏内格式相同的压缩后穿梭机状态字符串

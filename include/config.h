@@ -14,7 +14,27 @@ namespace fs = std::filesystem;
  * @brief 保存配置文件被解析后的数据
  * 
  */
-struct data;
+struct data {
+public:
+    //  Key 指代服务器的名字, Value 为服务器的 IP
+    using server_data = std::map<std::string, std::string>;
+private:
+    data() = delete;
+
+    data(const nlohmann::json& config_json);
+
+    data(const data&) = delete;
+    data& operator=(const data&) = delete;
+
+    data(data&&) = delete;
+    data& operator=(data&&) = delete;
+
+    ~data() = default;
+public:
+    friend const data& get();
+public:
+    server_data server_map;
+};  //  end of class config::data
 
 /**
  * @brief 获取解析后的配置文件数据

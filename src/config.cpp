@@ -14,28 +14,10 @@ namespace config {
 namespace fs = std::filesystem;
 using namespace MiraiCP;
 
-struct data {
-public:
-    //  Key 指代服务器的名字, Value 为服务器的 IP
-    using server_data = std::map<std::string, std::string>;
-private:
-    data() = delete;
-
-    data(const nlohmann::json& config_json)
-        : server_map(config_json.at("server")) {}
-
-    data(const data&) = delete;
-    data& operator=(const data&) = delete;
-
-    data(data&&) = delete;
-    data& operator=(data&&) = delete;
-
-    ~data() = default;
-public:
-    friend const data& get();
-public:
-    server_data server_map;
-};  //  end of class config::data
+//  class data definition begin
+data::data(const nlohmann::json& config_json)
+    : server_map(config_json.at("server")) {}
+//  class data definition end
 
 const data& get() {
     static data config_data = config::read();

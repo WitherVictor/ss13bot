@@ -12,7 +12,7 @@ namespace command {
 
 using namespace MiraiCP;
 
-void send_server_status(GroupMessageEvent event) {
+void send_server_status(GroupMessageEvent event, const std::string& full_server_ip) {
 
     //  获取服务器的当前信息
     auto server_status_expected = detailed::get_server_status();

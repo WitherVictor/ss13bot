@@ -3,7 +3,7 @@
 //  MiraiCP 依赖
 #include <MiraiCP.hpp>
 
-namespace plugin {
+namespace command {
 
 using namespace MiraiCP;
 

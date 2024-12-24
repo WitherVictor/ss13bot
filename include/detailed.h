@@ -10,7 +10,7 @@
 //  三方库
 #include <tl/expected.hpp>
 
-namespace plugin {
+namespace command {
 
 //  表示服务器信息的结构体
 struct server_status {

@@ -8,7 +8,7 @@
 #include <commands/send_server_status.h>
 #include <detailed.h>
 
-namespace plugin {
+namespace command {
 
 using namespace MiraiCP;
 

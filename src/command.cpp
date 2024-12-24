@@ -17,14 +17,14 @@
 
 using namespace MiraiCP;
 
-namespace plugin {
+namespace command {
 
 //  目前支持的指令列表
 const std::unordered_map<std::string, std::function<void(GroupMessageEvent)>> commands_list{
     {".server main", send_server_status}
 };
 
-void command(GroupMessageEvent event) {
+void main(GroupMessageEvent event) {
 
     constexpr auto QQGroup_number = QQID{884013901};
 

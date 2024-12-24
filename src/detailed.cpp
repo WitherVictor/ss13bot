@@ -21,7 +21,7 @@
 #include <MiraiCP.hpp>
 #include <detailed.h>
 
-namespace plugin {
+namespace command {
 
 namespace detailed {
 

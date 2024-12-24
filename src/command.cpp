@@ -34,12 +34,13 @@ void command(GroupMessageEvent event) {
         return;
     }
 
-    auto command = event.message.toMiraiCode();
+    auto raw_command = event.message.toMiraiCode();
 
-    auto called_command = commands_list.find(command);
-    if (called_command != std::end(commands_list)) {
-        Logger::logger.info("检测到有效指令, 准备执行: ", called_command->first);
-        called_command->second(event);
+    for (const auto& [command, function] : commands_list) {
+        if (raw_command.starts_with(command)) {
+            Logger::logger.info("检测到有效指令: ", command);
+            function(event);
+        }
     }
 }
 

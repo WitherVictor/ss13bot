@@ -11,17 +11,17 @@ namespace config {
 namespace fs = std::filesystem;
 
 /**
- * @brief 保佑服务器名和其 IP 的映射,
- *        用于查询服务器信息时根据名字选择 IP
+ * @brief 保存配置文件被解析后的数据
  * 
  */
-class server_list;
+struct data;
 
 /**
- * @brief 插件启动之前执行初始化
+ * @brief 获取解析后的配置文件数据
  * 
+ * @return const data& 
  */
-void initialize();
+const data& get();
 
 /**
  * @brief 读取当前目录下的配置文件

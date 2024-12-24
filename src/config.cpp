@@ -8,56 +8,52 @@
 //  MiraiCP
 #include <MiraiCP.hpp>
 #include <json.hpp>
-#include <optional>
 
 namespace config {
 
 namespace fs = std::filesystem;
 using namespace MiraiCP;
 
-class server_list {
+struct data {
 public:
-    using data_type = std::map<std::string, std::string>;
-public:
-    server_list(data_type&& other)
-        : data_list{other} {}
-public:
-    /**
-     * @brief 查找服务器列表里面是否存在对应的名字, 否则返回空值
-     * 
-     * @param key 
-     * @return std::optional<std::string> 
-     */
-    std::optional<std::string> find(const std::string& key) const {
-        auto find_result_iter = data_list.find(key);
-
-        if (find_result_iter != data_list.end()) {
-            return find_result_iter->second;
-        } else {
-            return std::nullopt;
-        }
-    }
+    //  Key 指代服务器的名字, Value 为服务器的 IP
+    using server_data = std::map<std::string, std::string>;
 private:
-    data_type data_list;
-};
+    data() = delete;
 
-void initialize() {
-    //  读取配置文件
-    auto config_json = read();
+    data(const nlohmann::json& config_json)
+        : server_map{config_json.at("server")} {}
+
+    data(const data&) = delete;
+    data& operator=(const data&) = delete;
+
+    data(data&&) = delete;
+    data& operator=(data&&) = delete;
+
+    ~data() = default;
+public:
+    friend const data& get();
+public:
+    server_data server_map;
+};  //  end of class config::data
+
+const data& get() {
+    static data config_data = config::read();
+    return config_data;
 }
 
-//  若未提供参数，那么默认为 fs::current_path()
 nlohmann::json read(fs::path current_path) {
-    current_path += "/config.json";
+    //  假设当前目录下有配置文件
+    current_path /= "config.json";
 
-    //  对于找不到配置文件的情况
-    //  我们无法预期使用者将在哪个服务器上进行查询
-    //  因此除了直接终止程序, 我们没有更好的选择
+    //  如果配置文件不存在, 那么我们无法获悉
+    //  向哪些服务器查询数据, 因此这里选择直接终止程序
     if (!fs::exists(current_path)) {
-        Logger::logger.error("配置文件不存在!");
+        Logger::logger.error("插件需要配置文件运行, 但配置文件不存在! 查找路径: ", current_path.string());
         std::terminate();
     }
 
+    //  返回配置文件
     return nlohmann::json::parse( std::ifstream(current_path) );
 }
 

@@ -22,7 +22,7 @@ private:
     data() = delete;
 
     data(const nlohmann::json& config_json)
-        : server_map{config_json.at("server")} {}
+        : server_map(config_json.at("server")) {}
 
     data(const data&) = delete;
     data& operator=(const data&) = delete;

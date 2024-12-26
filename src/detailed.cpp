@@ -109,7 +109,7 @@ tl::expected<server_status, error_info> query_server_status() {
     boost::asio::ip::tcp::socket socket{ context };
 
     //  设置 endpoint 为服务器的 ip 地址
-    boost::asio::ip::tcp::endpoint endpoint{boost::asio::ip::address::from_string("43.248.187.124"), 43319};
+    boost::asio::ip::tcp::endpoint endpoint{boost::asio::ip::make_address("43.248.187.124"), 43319};
 
     //  连接游戏服务器
     boost::system::error_code socket_error_code{};

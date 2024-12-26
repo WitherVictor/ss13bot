@@ -64,7 +64,7 @@ server_status parse_data_string(const std::string& server_data_string);
  *
  * @return tl::expected<server_status, error_info>
  */
-tl::expected<server_status, error_info> get_server_status();
+tl::expected<server_status, error_info> query_server_status();
 
 /**
  * @brief 将分割的数据提取到结构体内

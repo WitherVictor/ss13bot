@@ -100,7 +100,7 @@ server_status parse_data_string(const std::string& server_data_string) {
 
 
 
-tl::expected<server_status, error_info> get_server_status() {
+tl::expected<server_status, error_info> query_server_status() {
 
     using namespace MiraiCP;
 
@@ -159,6 +159,7 @@ tl::expected<server_status, error_info> get_server_status() {
         //  服务器数据的起始位置
         constexpr std::size_t data_index_begin = 5;
 
+        //  TODO: 复制数据可能导致额外的空字节被复制了，有待测试
         //  将缓冲区的数据复制到字符串内
         std::string server_data_string{};
         std::ranges::copy(data_buffer | std::views::drop(data_index_begin),

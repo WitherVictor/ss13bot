@@ -31,7 +31,7 @@ public:
         Event::registerEvent<MemberJoinEvent>(plugin::welcome);
 
         //  注册指令解析函数，发送特定消息时视作指令并执行对应功能
-        Event::registerEvent<GroupMessageEvent>(command::main);
+        Event::registerEvent<GroupMessageEvent>(command::main_logic);
     }
 
     // 退出函数。请在这里结束掉所有子线程，否则可能会导致程序崩溃

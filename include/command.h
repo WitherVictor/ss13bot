@@ -35,6 +35,6 @@ public:
     command_list_type command_list;
 };
 
-void main(GroupMessageEvent event);
+void main_logic(GroupMessageEvent event);
 
 }   //  end of namespace plugin

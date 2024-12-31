@@ -46,7 +46,7 @@ data_map::data_map(const config::data& config_data) {
 //  class data_map definition end
 
 //  群消息的回调函数, 用于监听指令
-void main(GroupMessageEvent event) {
+void main_logic(GroupMessageEvent event) {
 
     constexpr auto QQGroup_number = QQID{884013901};
 

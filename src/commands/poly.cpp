@@ -27,7 +27,7 @@ poly::poly(std::filesystem::path poly_path) {
         m_message_vector = std::move(result);
         Logger::logger.info("已读取 Poly 消息数: {}", m_message_vector.size());
     } else {
-        MiraiCP::Logger::logger.warning("Poly 的消息文件内未能读取到任何消息!");
+        Logger::logger.warning("Poly 的消息文件内未能读取到任何消息!");
     }   
 }
 

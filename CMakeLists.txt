@@ -116,7 +116,7 @@ if(Boost_FOUND)
 endif()
 
 # 开启所有警告
-add_compile_options(-Wall -Wextra -Werror -pedantic -O2)
+add_compile_options(-Wall -Wextra -Werror -pedantic)
 
 # 链接 Boost.asio 的依赖库, expected
 target_link_libraries(${MIRAICP_TARGET_NAME} PRIVATE ws2_32 tl::expected)

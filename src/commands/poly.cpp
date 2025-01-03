@@ -6,8 +6,15 @@
 using json = nlohmann::json;
 
 poly::poly(std::filesystem::path poly_path) {
-    auto poly_json = json::parse(std::ifstream{ poly_path });
-    auto phrase_json = poly_json["phrase"];
+    std::ifstream poly_file_stream{ poly_path };
+
+    if (!poly_file_stream) [[unlikely]] {
+        Logger::logger.error("无法打开配置文件!");
+        return;
+    }
+
+    auto poly_json = json::parse( poly_file_stream );
+    auto phrase_json = poly_json.at("phrase");
 
     if (!phrase_json.empty()) {
         std::vector<std::string> result{};
@@ -31,9 +38,9 @@ const std::vector<std::string> poly::get_message() {
 }
 
 void command::send_poly_message(GroupMessageEvent event) {
-    auto poly_message = poly::get_message();
-
+    static auto poly_message = poly::get_message();
     static detailed::rng generator{0, poly_message.size()};
+
     auto message = poly_message.at(generator.yield());
 
     event.group.sendMessage(message);

@@ -34,6 +34,7 @@ public:
     friend const data& get();
 public:
     server_data server_map;
+    std::filesystem::path poly_path;
 };  //  end of class config::data
 
 /**

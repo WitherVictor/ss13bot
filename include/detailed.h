@@ -3,12 +3,15 @@
 //  标准库
 #include <string>
 #include <map>
+#include <random>
+#include <algorithm>
 
 //  Boost 库
 #include <boost/system/error_code.hpp>
 
 //  三方库
 #include <tl/expected.hpp>
+#include <type_traits>
 
 namespace command {
 
@@ -33,7 +36,32 @@ struct error_info {
 namespace detailed {
 
 template <std::integral Tp>
-class rng;
+class rng {
+public:
+    rng(Tp begin, Tp end) 
+        : range{begin, end}
+    {
+        if (begin >= end) {
+            throw std::invalid_argument{"Range begin should smaller than end in the constructor of class rng!"};
+        }
+
+        //  使初始种子更加随机化
+        std::random_device rd{};
+        std::array<Tp, std::mt19937_64::state_size> seed_data{};
+        std::ranges::generate(seed_data, std::ref(rd));
+        std::seed_seq seed_sequence(std::begin(seed_data), std::end(seed_data));
+
+        engine = std::mt19937_64{seed_sequence};
+    }
+
+    Tp yield() { return range(engine); }
+private:
+    std::uniform_int_distribution<Tp> range;
+    std::mt19937_64 engine;
+};
+
+template <typename Tp, typename Up>
+rng(Tp, Up) -> rng<std::common_type_t<Tp, Up>>;
 
 /**
  * @brief 将字符串的值转换为指代服务器运行状态的字符串

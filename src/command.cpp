@@ -1,5 +1,3 @@
-#include "config.h"
-
 //  标准库
 #include <functional>
 
@@ -13,6 +11,7 @@
 #include <command.h>
 #include <commands/send_server_status.h>
 #include <commands/ip.h>
+#include <commands/poly.h>
 #include <detailed.h>
 
 using namespace MiraiCP;
@@ -41,6 +40,9 @@ data_map::data_map(const config::data& config_data) {
         auto server_address_function = std::bind(ip, _1, server_ip);
         command_list[server_address] = server_address_function;
         Logger::logger.info("已注册指令: ", server_address);
+
+        //  注册 .poly 指令
+        command_list[".poly"] = command::send_poly_message;
     }
 }
 //  class data_map definition end

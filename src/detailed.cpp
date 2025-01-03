@@ -2,13 +2,10 @@
 #include <array>
 #include <cctype>
 #include <charconv>
-#include <concepts>
 
 //  标准库
 #include <format>
 #include <iterator>
-#include <random>
-#include <stdexcept>
 #include <string>
 #include <chrono>
 #include <ranges>
@@ -310,31 +307,6 @@ std::string get_shuttle_time(const std::string &shuttle_time) {
     //  抛弃小时上的结果，只返回分钟和秒
     return result.substr(result.find(":") + 1);
 }
-
-template <std::integral Tp>
-class rng {
-public:
-    rng(Tp begin, Tp end) 
-        : range{begin, end}
-    {
-        if (begin >= end) {
-            throw std::invalid_argument{"Range begin should smaller than end in the constructor of class rng!"};
-        }
-
-        //  使初始种子更加随机化
-        std::random_device rd{};
-        std::array<Tp, std::mt19937_64::state_size> seed_data{};
-        std::ranges::generate(seed_data, std::ref(rd));
-        std::seed_seq seed_sequence(std::begin(seed_data), std::end(seed_data));
-
-        engine = std::mt19937_64{seed_sequence};
-    }
-
-    Tp yield() { return range(engine); }
-private:
-    std::uniform_int_distribution<Tp> range;
-    std::mt19937_64 engine;
-};
 
 }   // end of namespace detailed
 

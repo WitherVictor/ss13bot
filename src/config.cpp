@@ -16,7 +16,7 @@ using namespace MiraiCP;
 
 //  class data definition begin
 data::data(const nlohmann::json& config_json)
-    : server_map(config_json.at("server")) {}
+    : server_map(config_json.at("server")), poly_path{config_json.at("poly_config")} {}
 //  class data definition end
 
 const data& get() {

@@ -97,7 +97,7 @@ server_status parse_data_string(const std::string& server_data_string) {
 
 
 
-tl::expected<server_status, error_info> query_server_status() {
+tl::expected<server_status, error_info> query_server_status(const std::string& full_server_ip) {
 
     using namespace MiraiCP;
 
@@ -105,8 +105,14 @@ tl::expected<server_status, error_info> query_server_status() {
     boost::asio::io_context context{};
     boost::asio::ip::tcp::socket socket{ context };
 
+    //  解析服务器的 IP
+    boost::asio::ip::port_type server_port{};
+    auto raw_server_ip = full_server_ip.substr(0, full_server_ip.find(':'));
+    auto raw_server_port = full_server_ip.substr(full_server_ip.find(':') + 1);
+    std::from_chars(raw_server_port.data(), raw_server_port.data() + raw_server_port.size(), server_port);
+
     //  设置 endpoint 为服务器的 ip 地址
-    boost::asio::ip::tcp::endpoint endpoint{boost::asio::ip::make_address("43.248.187.124"), 43319};
+    boost::asio::ip::tcp::endpoint endpoint{boost::asio::ip::make_address(raw_server_ip), server_port};
 
     //  连接游戏服务器
     boost::system::error_code socket_error_code{};

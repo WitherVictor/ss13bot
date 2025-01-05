@@ -30,6 +30,8 @@ data_map::data_map(const config::data& config_data) {
 
     for (const auto& [server_name, server_ip] : config::get().server_map) {
         //  将查询服务器信息的指令注册到指令列表内
+        Logger::logger.info("注册服务器信息和 IP 查询指令, 服务器名: ", server_name, "服务器 IP: ", server_ip);
+
         auto server_info = std::format(".server {}", server_name);
         auto server_info_function = std::bind(send_server_status, _1, server_ip);
         command_list[server_info] = server_info_function;

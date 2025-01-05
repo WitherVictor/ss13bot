@@ -50,6 +50,6 @@ const data& get();
  * @param current_path 
  * @return nlohmann::json
  */
-nlohmann::json read(fs::path current_path = fs::current_path());
+nlohmann::json read();
 
 }   //  end of namespace config

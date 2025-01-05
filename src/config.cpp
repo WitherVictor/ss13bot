@@ -27,7 +27,7 @@ const data& get() {
 nlohmann::json read(fs::path current_path) {
     //  假设当前目录下有配置文件
     //  拼接配置文件路径, 预期与动态库处于同一目录下
-    current_path / "data" / "tech.eritquearcus.miraicp" / "poly" / "config.json";
+    current_path = current_path / "data" / "tech.eritquearcus.miraicp" / "poly" / "config.json";
 
     //  如果配置文件不存在, 那么我们无法获悉
     //  向哪些服务器查询数据, 因此这里选择直接终止程序

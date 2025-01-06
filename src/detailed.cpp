@@ -213,7 +213,7 @@ server_status extract_server_info(const std::map<std::string, std::string>& serv
 }
 
 
-
+/*
 double td_string_to_double(const std::string& time_dilation_string) {
     auto size = static_cast<std::string::iterator::difference_type>(time_dilation_string.size());
 
@@ -221,23 +221,24 @@ double td_string_to_double(const std::string& time_dilation_string) {
     std::from_chars(time_dilation_string.data(), std::next(time_dilation_string.data(), size), result);
     return result;
 }
-
+*/
 
 
 std::string parse_server_dilation(const std::map<std::string, std::string> &server_info_map) {
     //  提取所有字符串
-    //  auto td_current = server_info_map.at("time_dilation_current");
-    auto td_average = server_info_map.at("time_dilation_avg");
+    auto td_current = server_info_map.at("time_dilation_current");
+    //  auto td_average = server_info_map.at("time_dilation_avg");
     //  auto td_average_slow = server_info_map.at("time_dilation_avg_slow");
     //  auto td_average_fast = server_info_map.at("time_dilation_avg_fast");
 
     //  保存转换后的结果
-    //  auto td_current_value = detailed::td_string_to_double(td_current);
-    auto td_average_value = detailed::td_string_to_double(td_average);
+    std::uint16_t time_dilation{};
+    std::from_chars(td_current.data(), td_current.data() + td_current.size(), time_dilation);
+    //  auto td_average_value = detailed::td_string_to_double(td_average);
     //  auto td_average_slow_value = detailed::td_string_to_double(td_average_slow);
     //  auto td_average_fast_value = detailed::td_string_to_double(td_average_fast);
 
-    return std::format("{:.2f}%)", td_average_value);
+    return std::format("{}%)", time_dilation);
 }
 
 

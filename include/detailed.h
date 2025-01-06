@@ -69,7 +69,7 @@ rng(Tp, Up) -> rng<std::common_type_t<Tp, Up>>;
  * @param current_status 
  * @return std::string 
  */
-std::string get_server_running_status(const std::string& current_status);
+std::string get_server_running_status(const std::string&);
 
 /**
  * @brief 将字符串的值转为 {}:{}:{} 格式的时间
@@ -77,7 +77,7 @@ std::string get_server_running_status(const std::string& current_status);
  * @param time_string 
  * @return std::string 
  */
-std::string calculate_time(const std::string& time_string);
+std::string calculate_time(const std::string&);
 
 /**
  * @brief 解析服务器返回的带有服务器运行信息的数据字符串
@@ -85,14 +85,14 @@ std::string calculate_time(const std::string& time_string);
  * @param server_data_string
  * @return server_status
  */
-server_status parse_data_string(const std::string& server_data_string);
+server_status parse_data_string(const std::string&);
 
 /**
  * @brief 获取当前服务器的信息，可能失败
  *
  * @return tl::expected<server_status, error_info>
  */
-tl::expected<server_status, error_info> query_server_status();
+tl::expected<server_status, error_info> query_server_status(const std::string&);
 
 /**
  * @brief 将分割的数据提取到结构体内

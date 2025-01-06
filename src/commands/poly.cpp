@@ -9,12 +9,12 @@ poly::poly(std::filesystem::path poly_path) {
     std::ifstream poly_file_stream{ poly_path };
 
     if (!poly_file_stream) [[unlikely]] {
-        Logger::logger.error("无法打开配置文件!");
+        Logger::logger.error("无法打开配置文件! 配置文件路径: ", poly_path);
         return;
     }
 
     auto poly_json = json::parse( poly_file_stream );
-    auto phrase_json = poly_json.at("phrase");
+    auto phrase_json = poly_json.at("phrases");
 
     if (!phrase_json.empty()) {
         std::vector<std::string> result{};

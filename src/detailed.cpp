@@ -103,16 +103,29 @@ tl::expected<server_status, error_info> query_server_status(const std::string& f
 
     //  初始化 io_context 和 socket
     boost::asio::io_context context{};
+    boost::asio::ip::tcp::resolver resolver{context};
     boost::asio::ip::tcp::socket socket{ context };
 
     //  解析服务器的 IP
     boost::asio::ip::port_type server_port{};
     auto raw_server_ip = full_server_ip.substr(0, full_server_ip.find(':'));
     auto raw_server_port = full_server_ip.substr(full_server_ip.find(':') + 1);
+
+    //  如果服务器是域名, 则解析, 否则返回原来的 IPv4 IP
+    auto endpoints = resolver.resolve(raw_server_ip, "https");
+    std::string server_ip{};
+
+    //  一般来说，游戏服务器域名解析后的 IP 只有一个
+    //  因此只取第一个地址
+    for (const auto& endpoint : endpoints) {
+        server_ip = endpoint.endpoint().address().to_string();
+        break;
+    }
+
     std::from_chars(raw_server_port.data(), raw_server_port.data() + raw_server_port.size(), server_port);
 
     //  设置 endpoint 为服务器的 ip 地址
-    boost::asio::ip::tcp::endpoint endpoint{boost::asio::ip::make_address(raw_server_ip), server_port};
+    boost::asio::ip::tcp::endpoint endpoint{boost::asio::ip::make_address(server_ip), server_port};
 
     //  连接游戏服务器
     boost::system::error_code socket_error_code{};

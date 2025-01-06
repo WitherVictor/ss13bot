@@ -7,7 +7,7 @@
 //  MiraiCP 依赖
 #include <MiraiCP.hpp>
 
-//	项目内头文件
+//  项目内头文件
 #include <command.h>
 #include <commands/send_server_status.h>
 #include <commands/ip.h>

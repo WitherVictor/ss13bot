@@ -197,7 +197,9 @@ tl::expected<server_status, error_info> query_server_status(const std::string& f
 server_status extract_server_info(const std::map<std::string, std::string>& server_info_map) {
     server_status server_info_struct{
         .gamestate = detailed::get_server_running_status(server_info_map.at("gamestate")),
-        .round_id = server_info_map.at("round_id"),
+        .round_id = server_info_map.find("round_id") != server_info_map.end()
+                                        ? server_info_map.at("round_id")
+                                        : "N/A",
         .round_duration = detailed::calculate_time(server_info_map.at("round_duration")),
         .time_dilation = detailed::parse_server_dilation(server_info_map),
         .map_name = detailed::parse_server_map(server_info_map.at("map_name")),
@@ -238,7 +240,7 @@ std::string parse_server_dilation(const std::map<std::string, std::string> &serv
     //  auto td_average_slow_value = detailed::td_string_to_double(td_average_slow);
     //  auto td_average_fast_value = detailed::td_string_to_double(td_average_fast);
 
-    return std::format("{}%)", time_dilation);
+    return std::format("{}%", time_dilation);
 }
 
 
@@ -269,6 +271,10 @@ void replace_substring(std::string &str, const std::string &old_substr, const st
 
 
 std::string get_shuttle_status(const std::map<std::string, std::string>& server_info_map) {
+    if (server_info_map.find("shuttle_mode") == server_info_map.end()) {
+        return "--:--";
+    }
+
     auto shuttle_status = detailed::parse_shuttle_status(server_info_map.at("shuttle_mode"));
     
     auto shuttle_time_string = server_info_map.at("shuttle_timer");

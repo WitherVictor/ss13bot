@@ -1,3 +1,4 @@
+#include "tl/expected.hpp"
 #include <algorithm>
 #include <array>
 #include <cctype>
@@ -174,6 +175,10 @@ tl::expected<server_status, error_info> query_server_status(const std::string& f
 
         //  服务器数据的起始位置
         constexpr std::size_t data_index_begin = 5;
+        if (bytes_read == data_index_begin) {
+            Logger::logger.warning("服务器发送的数据包内容为空!");
+            return tl::unexpected(error_info{});
+        }
 
         //  TODO: 复制数据可能导致额外的空字节被复制了，有待测试
         //  将缓冲区的数据复制到字符串内
@@ -182,7 +187,6 @@ tl::expected<server_status, error_info> query_server_status(const std::string& f
                         std::back_inserter(server_data_string));
 
         Logger::logger.info("解析的服务器数据字符串为: ", server_data_string);
-        Logger::logger.info("数据长度: ", server_data_string.size());
         
         //  解析字符串并保存至结构体
         return detailed::parse_data_string(server_data_string);

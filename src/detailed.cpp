@@ -187,6 +187,7 @@ tl::expected<server_status, error_info> query_server_status(const std::string& f
                         std::back_inserter(server_data_string));
 
         Logger::logger.info("解析的服务器数据字符串为: ", server_data_string);
+        Logger::logger.info("数据长度: ", server_data_string.size());
         
         //  解析字符串并保存至结构体
         return detailed::parse_data_string(server_data_string);

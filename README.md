@@ -8,7 +8,9 @@
 
 ### 前置要求
 
-本项目基于 Mirai 和 MiraiCP 开发, 在使用机器人之前须成功配置 Mirai 和 MiraiCP 后, 由 MiraiCP 的 `libloader.dll` 启动插件
+本项目基于 Mirai 和 MiraiCP 开发, 在使用机器人之前须成功配置 Mirai 和 MiraiCP 后, 由 MiraiCP 的 `libloader.dll` 启动插件。
+
+**注意**：插件支持向服务器传递报错信息，但 `json` 要求文本信息是合法的 UTF-8 文本，若本地报错信息存在不合法的 UTF-8 字符会导致崩溃。
 
 ### 项目配置
 

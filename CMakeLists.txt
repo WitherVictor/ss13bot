@@ -105,23 +105,33 @@ if (UNIX)
 endif (UNIX)
 
 # SS13bot begin
-find_package(Boost REQUIRED)
+
+# 设置 Boost 头文件与库路径
+set(Boost_INCLUDE_DIRS "D:/Development/boost_1_88_0")
+set(Boost_LIBRARIES ${BOOST_INCLUDE_PATH}/stage/lib)
 
 add_subdirectory(thirdparty/expected)
-
-if(Boost_FOUND)
-    message("Boost found !")
-    target_include_directories(${MIRAICP_TARGET_NAME} PRIVATE ${Boost_INCLUDE_DIRS})
-    target_link_libraries(${MIRAICP_TARGET_NAME} PRIVATE ${Boost_LIBRARIES})
-endif()
 
 # 开启所有警告
 add_compile_options(-Wall -Wextra -Werror -pedantic)
 
 # 链接 Boost.asio 的依赖库, expected
-target_link_libraries(${MIRAICP_TARGET_NAME} PRIVATE ws2_32 tl::expected)
+target_link_libraries(${MIRAICP_TARGET_NAME}
+    PRIVATE
+        ws2_32
+        tl::expected
+)
+
+target_link_directories(${MIRAICP_TARGET_NAME}
+    PRIVATE
+        ${Boost_LIBRARIES}
+)
 
 # 引入头文件
-target_include_directories(${MIRAICP_TARGET_NAME} PRIVATE include)
+target_include_directories(${MIRAICP_TARGET_NAME}
+    PRIVATE
+        include
+        ${Boost_INCLUDE_DIRS}
+)
 
 # SS13Bot end
